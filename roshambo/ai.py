@@ -17,5 +17,7 @@ class AI(ABC):
 
 class RandomAI(AI):
     """AI that plays game by choosing random moves in every turn."""
+
     def next_move(self) -> Move:
+        """Returns a random move the AI will make."""
         return random.choice(list(Move))
