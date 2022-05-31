@@ -40,6 +40,9 @@ class Move(Enum):
     def __ge__(self, other) -> bool:
         return other in [self.dominates, self]
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Result:
     """Result of one round of game."""
@@ -62,3 +65,67 @@ class Result:
     def is_draw(self) -> bool:
         """Returns True round ended up as a draw."""
         return self.player_move == self.ai_move
+
+
+class Stats:
+    """Statistics of series of game rounds."""
+
+    def __init__(self) -> None:
+        self.results: list[Result] = []
+
+    def add_result(self, result: Result) -> None:
+        """Add a game round result."""
+        self.results.append(result)
+
+    @property
+    def games_count(self) -> int:
+        """Returns number of all played games."""
+        return len(self.results)
+
+    @property
+    def player_wins_count(self) -> int:
+        """Returns number of time player won."""
+        wins = 0
+        for result in self.results:
+            if result.player_wins:
+                wins += 1
+        return wins
+
+    @property
+    def ai_wins_count(self) -> int:
+        """Returns number of time AI won."""
+        wins = 0
+        for result in self.results:
+            if result.ai_wins:
+                wins += 1
+        return wins
+
+    @property
+    def draws_count(self) -> int:
+        """Returns number of time fame ended up as draw."""
+        draws = 0
+        for result in self.results:
+            if result.is_draw:
+                draws += 1
+        return draws
+
+    @property
+    def player_wins_rate(self) -> float:
+        """Returns a fraction of games player won."""
+        if games := self.games_count:
+            return self.player_wins_count / games
+        return 0.0
+
+    @property
+    def ai_wins_rate(self) -> float:
+        """Returns a fraction of games AI won."""
+        if games := self.games_count:
+            return self.ai_wins_count / games
+        return 0.0
+
+    @property
+    def draws_rate(self) -> float:
+        """Returns a fraction of games that ended up as a draw."""
+        if games := self.games_count:
+            return self.draws_count / games
+        return 0.0

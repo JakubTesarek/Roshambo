@@ -1,6 +1,6 @@
 import pytest
 
-from roshambo.statistics import Move, Result
+from roshambo.statistics import Move, Result, Stats
 
 
 class TestMove:
@@ -122,3 +122,53 @@ class TestResult:
             assert not result.player_wins
             assert not result.ai_wins
             assert result.is_draw
+
+
+class TestStats:
+    def test_games_count(self):
+        stats = Stats()
+        assert stats.games_count == 0
+        stats.add_result(Result(Move.rock, Move.paper))
+        assert stats.games_count == 1
+
+    def test_counts(self):
+        stats = Stats()
+        assert stats.player_wins_count == 0
+        assert stats.ai_wins_count == 0
+        assert stats.draws_count == 0
+        
+        stats.add_result(Result(Move.paper, Move.rock))  # player wins
+        assert stats.player_wins_count == 1
+        assert stats.ai_wins_count == 0
+        assert stats.draws_count == 0
+
+        stats.add_result(Result(Move.rock, Move.paper))  # ai wins
+        assert stats.player_wins_count == 1
+        assert stats.ai_wins_count == 1
+        assert stats.draws_count == 0
+
+        stats.add_result(Result(Move.paper, Move.paper))  # draw
+        assert stats.player_wins_count == 1
+        assert stats.ai_wins_count == 1
+        assert stats.draws_count == 1
+
+    def test_rates(self):
+        stats = Stats()
+        assert stats.player_wins_rate == 0.0
+        assert stats.ai_wins_rate == 0.0
+        assert stats.draws_rate == 0.0
+        
+        stats.add_result(Result(Move.paper, Move.rock))  # player wins
+        assert stats.player_wins_rate == 1.0
+        assert stats.ai_wins_rate == 0
+        assert stats.draws_rate == 0
+
+        stats.add_result(Result(Move.rock, Move.paper))  # ai wins
+        assert stats.player_wins_rate == 0.5
+        assert stats.ai_wins_rate == 0.5
+        assert stats.draws_rate == 0
+
+        stats.add_result(Result(Move.paper, Move.paper))  # draw
+        assert stats.player_wins_rate == pytest.approx(0.333, rel=1e-2)
+        assert stats.ai_wins_rate == pytest.approx(0.333, rel=1e-2)
+        assert stats.draws_rate == pytest.approx(0.333, rel=1e-2)
