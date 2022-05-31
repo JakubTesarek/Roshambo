@@ -1,9 +1,8 @@
 import pytest
 
-from roshambo.ai import Move
+from roshambo.ai import Move, RandomAI
 
 class TestMove:
-
     @pytest.mark.parametrize('move1,move2', [
         (Move.rock, Move.scissors),
         (Move.paper, Move.rock),
@@ -90,3 +89,15 @@ class TestMove:
     ])
     def test_not_le(self, move1, move2):
         assert not move1 <= move2
+
+
+class TestRandomAi:
+    def test_moves_are_random(self):
+        stats = {move:0 for move in Move}
+
+        ai = RandomAI()
+        for i in range(100_000):
+            stats[ai.next_move()] += 1
+
+        for stat in stats.values():
+            assert stat == pytest.approx(100_000/3, rel=1e-2)

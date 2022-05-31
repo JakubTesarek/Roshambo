@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import random
+from abc import ABC, abstractmethod
 from enum import Enum
+
 
 class Move(Enum):
     rock = 1
@@ -36,3 +39,18 @@ class Move(Enum):
 
     def __ge__(self, other) -> bool:
         return other in [self.dominates, self]
+
+
+class AI(ABC):
+    """AI that can play game rock-paper-scissors."""
+
+    @abstractmethod
+    def next_move(self) -> Move:
+        """Returns next move the AI will make."""
+        pass
+
+
+class RandomAI(AI):
+    """AI that plays game by choosing random moves in every turn."""
+    def next_move(self) -> Move:
+        return random.choice(list(Move))
