@@ -19,6 +19,15 @@ class Move(Enum):
             Move.scissors: Move.paper
         }[self]
 
+    @property
+    def is_dominated_by(self) -> Move:
+        """A move that current move loses againts."""
+        return {
+            Move.scissors: Move.rock,
+            Move.rock: Move.paper,
+            Move.paper: Move.scissors 
+        }[self]
+
     def __hash__(self) -> str:
         return hash(self.name)
 
@@ -42,6 +51,9 @@ class Move(Enum):
 
     def __str__(self) -> str:
         return self.name
+
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}:{self.name}'
 
 
 class Result:

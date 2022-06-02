@@ -2,7 +2,7 @@ from rich.prompt import Prompt
 from rich.console import Console
 from rich.table import Table
 
-from roshambo.ai import RandomAI
+from roshambo.ai import RandomAI, MarkovChainAI
 from roshambo.statistics import Move, Stats, Result
 
 from typing import Optional
@@ -25,11 +25,11 @@ def get_player_move() -> Optional[Move]:
 def print_result(result: Result) -> None:
     console.print(f'Player chooses [yellow]{player_move}[/yellow]. AI chooses [yellow]{ai_move}[/yellow].')
     if result.is_draw:
-        console.print(f'Game is a [yellow]draw[/yellow].\n')
+        console.print('[yellow bold]Game is a draw.\n')
     elif result.player_wins:
-        console.print(f'[yellow]Player wins.[/yellow] Congratulations!\n')
+        console.print('[green bold]Player wins.[/green bold] Congratulations!\n')
     else:
-        console.print(f'[yellow]AI wins.[/yellow]\n')
+        console.print('[red bold]AI wins.\n')
 
 
 def print_stats(stats: Stats) -> None:
@@ -50,7 +50,7 @@ def print_stats(stats: Stats) -> None:
 
 
 if __name__ == '__main__':
-    ai = RandomAI()
+    ai = MarkovChainAI()
     stats = Stats()
 
     console.print('[yellow]Welcome to Roshambo, aka. Rock Paper Scissors.\n')
@@ -61,6 +61,7 @@ if __name__ == '__main__':
                 ai_move = ai.next_move()
                 result = Result(player_move, ai_move)
                 stats.add_result(result)
+                ai.add_result(result)
                 print_result(result)
             else:
                 break
