@@ -1,23 +1,10 @@
-from rich.prompt import Prompt
 from rich.table import Table
 
-from roshambo.ai import RandomAI, MarkovChainAI
+from roshambo.ai import RandomAI, MarkovChainAI, HumanPlayer
 from roshambo.ui import console
 from roshambo.statistics import Move, Stats, Result
 
 from typing import Optional
-
-
-def get_player_move() -> Optional[Move]:
-    choice = Prompt.ask(
-        '[green]Please choose Rock [red](1)[/red], Paper [red](2)[/red], Scissors [red](3)[/red] or Quit [red](q)[/red].',
-        choices=['1', '2', '3', 'q']
-    )
-
-    if choice == 'q':
-        return None
-    else:
-        return Move(int(choice))
                 
 
 def print_result(result: Result) -> None:
@@ -48,22 +35,20 @@ def print_stats(stats: Stats) -> None:
 
 
 if __name__ == '__main__':
+    player = HumanPlayer()
     ai = MarkovChainAI()
-    stats = Stats()
 
     console.print('[yellow]Welcome to Roshambo, aka. Rock Paper Scissors.\n')
 
     try:
         while True:
-            if player_move := get_player_move():
-                ai_move = ai.next_move()
-                result = Result(player_move, ai_move)
-                stats.add_result(result)
-                ai.add_result(result)
-                print_result(result)
-            else:
-                break
+            player_move = player.next_move()
+            ai_move = ai.next_move()
+            result = Result(player_move, ai_move)
+            player.add_result(result)
+            ai.add_result(result)
+            print_result(result)
     except KeyboardInterrupt:
         pass
     finally:
-        print_stats(stats)
+        print_stats(player.stats)

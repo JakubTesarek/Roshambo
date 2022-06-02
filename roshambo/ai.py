@@ -3,11 +3,13 @@ from __future__ import annotations
 import random
 from abc import ABC, abstractmethod
 
+from rich.prompt import Prompt
+
 from roshambo.statistics import Move, Stats, Result
 
 
-class AI(ABC):
-    """AI that can play game rock-paper-scissors."""
+class Participant(ABC):
+    """Participant of a game that can make a move."""
 
     def __init__(self) -> None:
         self.stats = Stats()
@@ -20,6 +22,23 @@ class AI(ABC):
     def next_move(self) -> Move:
         """Returns next move the AI will make."""
         pass
+
+
+class HumanPlayer(Participant):
+    def next_move(self) -> Move:
+        choice = Prompt.ask(
+            '[green]Please choose Rock [red](1)[/red], Paper [red](2)[/red], Scissors [red](3)[/red] or Quit [red](q)[/red].',
+            choices=['1', '2', '3', 'q']
+        )
+
+        if choice == 'q':
+            raise KeyboardInterrupt()
+        else:
+            return Move(int(choice))
+
+
+class AI(Participant):
+    """AI that can play game rock-paper-scissors."""
 
     def _get_backup_move(self) -> Move:
         """Returns a random move the AI will make in case it wasn't able to predict move properly."""
