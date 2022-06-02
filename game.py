@@ -1,14 +1,12 @@
 from rich.prompt import Prompt
-from rich.console import Console
 from rich.table import Table
 
 from roshambo.ai import RandomAI, MarkovChainAI
+from roshambo.ui import console
 from roshambo.statistics import Move, Stats, Result
 
 from typing import Optional
 
-
-console = Console()
 
 def get_player_move() -> Optional[Move]:
     choice = Prompt.ask(
